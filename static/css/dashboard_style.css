@@ -9,3 +9,36 @@
     padding:0;
     border-radius: 15px;
 }
+
+.info_box {
+    display: flex;
+    justify-content: space-between; 
+    width: 100%;
+    height: calc(100vh - 100px); 
+    margin-top: 20px;
+}
+
+.user_box {
+    width: 21%;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+.user_box:hover{
+    border: 2px solid black;
+}
+.mounts_box {
+    width: 55%;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+.mounts_box:hover{
+    border: 2px solid black;
+}
+.activity_box {
+    width: 21%;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+.activity_box:hover{
+    border: 2px solid black;
+}
