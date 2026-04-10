@@ -28,14 +28,14 @@
 }
 .mounts_box{
     width: 55%;     
-    border-right: 1px solid black;
+    border: 1px solid black;
     box-sizing: border-box;
     overflow-y: auto;
     border-radius: 20px;
 }
 
 .mounts_box:hover{
-    outline: 1px solid #F0EAD6;
+    outline: 1px solid black;
 }
 .activity_box {
     width: 21%;
@@ -47,6 +47,7 @@
 }
 
 .mounts{
+    border:1px solid black;
     color: black;
     width: 100%;             
     margin-bottom: 10px;    
