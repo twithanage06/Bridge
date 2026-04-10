@@ -40,7 +40,7 @@
     border: 2px solid black;
 }
 
-/* 1. The Container */
+
 .mounts_box {
     width: 55%;
     height: 100%;       
@@ -48,7 +48,7 @@
     border-radius: 10px;
     padding: 15px; 
     overflow-y: auto;   
-    overflow-x: hidden; /* Prevent horizontal spilling */
+    overflow-x: hidden; 
     box-sizing: border-box; 
 }
 
@@ -57,8 +57,8 @@
     display: flex;
     justify-content: space-between; 
     align-items: center; 
-    width: 100%;        /* Works correctly with border-box */
-    min-height: 50px;   /* Changed from fixed height to min-height */
+    width: 100%;       
+    min-height: 50px;   
     height: auto;
     margin-bottom: 10px; 
     padding: 10px 15px;
@@ -69,18 +69,12 @@
 
 /* 3. The Text (Column Control) */
 .mounts h2 {
-    font-size: 0.9rem;  /* Slightly smaller to prevent crowding */
+    font-size: 0.9rem;  
     margin: 0;          
     padding: 0 5px;
-    white-space: nowrap;      /* Prevents text from jumping to a new line */
-    overflow: hidden;         /* Clips text if it's too long */
-    text-overflow: ellipsis;  /* Adds '...' if the path is giant */
-    flex: 1;                  /* Forces equal column widths */
+    white-space: nowrap;     
+    overflow: hidden;         
+    text-overflow: ellipsis;  
+    flex: 1;                  
 }
 
-/* Optional: Give the path more room than the name */
-.mounts h2:last-child {
-    flex: 2; 
-    text-align: right;
-    color: #666;
-}
