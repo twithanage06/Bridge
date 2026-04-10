@@ -26,20 +26,7 @@
 .user_box:hover{
     border: 2px solid black;
 }
-.mounts_box{
-    position: fixed;
-    left: 50%;
-    top: 9vh; 
-    transform: translateX(-50%);      
-    width: 58%;     
-    height: calc(100vh - 10vh); 
-    background-color: #2a2438; 
-    border-right: 1px solid #443c5a;
-    padding: 20px;
-    box-sizing: border-box;
-    overflow-y: auto;
-    border-radius: 20px;
-}
+
 
 .mounts_box:hover{
     outline: 1px solid #F0EAD6;
@@ -53,15 +40,47 @@
     border: 2px solid black;
 }
 
-.mounts{
-    background-color: #d1cbba;
-    color: black;
-    width: 100%;             
-    margin-bottom: 10px;    
-    padding: 15px;
-    box-sizing: border-box;
-    border-radius: 10px;    
-    display: flex; 
-    justify-content: space-between;
-    align-items: center;
+/* 1. The Container */
+.mounts_box {
+    width: 55%;
+    height: 100%;       
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 15px; 
+    overflow-y: auto;   
+    overflow-x: hidden; /* Prevent horizontal spilling */
+    box-sizing: border-box; 
+}
+
+/* 2. The Row Item */
+.mounts {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    width: 100%;        /* Works correctly with border-box */
+    min-height: 50px;   /* Changed from fixed height to min-height */
+    height: auto;
+    margin-bottom: 10px; 
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box; 
+}
+
+/* 3. The Text (Column Control) */
+.mounts h2 {
+    font-size: 0.9rem;  /* Slightly smaller to prevent crowding */
+    margin: 0;          
+    padding: 0 5px;
+    white-space: nowrap;      /* Prevents text from jumping to a new line */
+    overflow: hidden;         /* Clips text if it's too long */
+    text-overflow: ellipsis;  /* Adds '...' if the path is giant */
+    flex: 1;                  /* Forces equal column widths */
+}
+
+/* Optional: Give the path more room than the name */
+.mounts h2:last-child {
+    flex: 2; 
+    text-align: right;
+    color: #666;
 }
