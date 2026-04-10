@@ -69,6 +69,7 @@ def get_drives():
 
 @app.route("/admin_dashboard", methods=["POST","GET"])
 def admin_dashboard():
+    get_drives()
     all_drives = Drive.query.all()
     return render_template("/admin_dashboard.html", drives=all_drives)
 
@@ -112,7 +113,7 @@ def nuke_everything():
 
 @app.route("/")
 def root():
-    get_drives()
+    
     with app.app_context():
         db.create_all()
         print("Database created!")
