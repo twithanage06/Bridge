@@ -27,12 +27,8 @@
     border: 2px solid black;
 }
 .mounts_box{
-    position: fixed;
-    left: 50%;
-    top: 9vh;   
     width: 55%;     
     border-right: 1px solid black;
-    padding: 20px;
     box-sizing: border-box;
     overflow-y: auto;
     border-radius: 20px;
