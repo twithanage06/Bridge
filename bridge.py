@@ -7,6 +7,9 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import numpy as np
 import subprocess as sp
+import yaml
+import os
+import shutil
 from werkzeug.security import generate_password_hash, check_password_hash
 
 #Initialises the app and databses
@@ -33,10 +36,40 @@ class Drive(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     drive_name = db.Column(db.String(20), unique=True, nullable=False)
     drive_size = db.Column(db.String(20), nullable=False)
+    drive_mnt = db.Column(db.String(50), unique=True, nullable=False)
     user_connection = db.Column(db.String(20))
+
+
+def get_drives():
+    try:
+        with open("docker-compose.yaml", 'r') as f:
+            services = yaml.safe_load(f).get('services', {})
+
+        Drive.query.delete()
+
+        for config in services.values():
+            for v in config.get('volumes', []):
+                if isinstance(v, str) and ":" in v:
+                    path = v.split(':')[1]
+                    # Only grab actual storage mounts
+                    if path.startswith(('/mnt', '/media')):
+                        # Get name and size in one-liners
+                        name = path.split('/')[-1]
+                        usage = shutil.disk_usage(path)
+                        size_info = f"{usage.used // (2**30)}GB / {usage.total // (2**30)}GB"
+                        
+                        db.session.add(Drive(drive_name=name, drive_size=size_info, drive_mnt=path, user_connection="None"))
+
+        db.session.commit()
+    except Exception as e:
+        print(f"Sync failed: {e}")
+        db.session.rollback()
+                
+
 
 @app.route("/admin_dashboard", methods=["POST","GET"])
 def admin_dashboard():
+    
     return render_template("/admin_dashboard.html")
 
 @app.route("/admin_setup", methods=["POST", "GET"])
@@ -45,7 +78,7 @@ def admin_setup():
     name_taken = None
     if request.method == "POST":
         username = request.form.get("usrnme").strip()
-        password = request.form.get("psswrd").strip()
+        password = request.form.get("psswrd")
         encrypted_psswd = generate_password_hash(password)
 
         new_admin = User(rank=rank, username=username, password_hash=encrypted_psswd)
@@ -79,6 +112,7 @@ def nuke_everything():
 
 @app.route("/")
 def root():
+    get_drives()
     with app.app_context():
         db.create_all()
         print("Database created!")

@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  bridge_app:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+      - /mnt/storage/cloud1:/mnt/cloud1
+      - /mnt/storage/cloud2:/mnt/cloud2
+    environment:
+      - FLASK_ENV=development
+
+volumes:
+  nextcloud_app:
