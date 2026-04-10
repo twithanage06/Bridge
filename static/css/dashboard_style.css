@@ -26,15 +26,23 @@
 .user_box:hover{
     border: 2px solid black;
 }
-.mounts_box {
-    width: 55%;
-    border: 1px solid black;
-    border-radius: 10px;
-    padding: 15px; 
-    overflow-y: auto; 
+.mounts_box{
+    position: fixed;
+    left: 50%;
+    top: 9vh; 
+    transform: translateX(-50%);      
+    width: 58%;     
+    height: calc(100vh - 10vh); 
+    background-color: #2a2438; 
+    border-right: 1px solid #443c5a;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    border-radius: 20px;
 }
+
 .mounts_box:hover{
-    border: 2px solid black;
+    outline: 1px solid #F0EAD6;
 }
 .activity_box {
     width: 21%;
@@ -45,23 +53,15 @@
     border: 2px solid black;
 }
 
-.mounts {
-    display: flex;
-    justify-content: space-between; 
-    align-items: center; 
-    width: 100%;
-    height: 50px;
-    margin-bottom: 12px; 
-    padding: 0 20px; 
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background-color: #f9f9f9; 
+.mounts{
+    background-color: #d1cbba;
+    color: black;
+    width: 100%;             
+    margin-bottom: 10px;    
+    padding: 15px;
     box-sizing: border-box;
-}
-
-.mounts h2 {
-    font-size: 1rem;
-    margin: 0; 
-    font-weight: 500;
-    color: #333;
+    border-radius: 10px;    
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
 }
