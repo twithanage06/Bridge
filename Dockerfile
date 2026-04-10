@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 5000
 
 # 7. Start: The command to run when the container turns on
-CMD ["python", "app.py"]
+CMD ["python", "bridge.py"]

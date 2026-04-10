@@ -6,7 +6,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - .:/app
+      - .:/bridge
       - /mnt/storage/cloud1:/mnt/cloud1
       - /mnt/storage/cloud2:/mnt/cloud2
     environment:
