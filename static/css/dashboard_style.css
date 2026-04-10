@@ -29,12 +29,9 @@
 .mounts_box{
     position: fixed;
     left: 50%;
-    top: 9vh; 
-    transform: translateX(-50%);      
-    width: 58%;     
-    height: calc(100vh - 10vh); 
-    background-color: #2a2438; 
-    border-right: 1px solid #443c5a;
+    top: 9vh;   
+    width: 55%;     
+    border-right: 1px solid black;
     padding: 20px;
     box-sizing: border-box;
     overflow-y: auto;
@@ -54,7 +51,6 @@
 }
 
 .mounts{
-    background-color: #d1cbba;
     color: black;
     width: 100%;             
     margin-bottom: 10px;    
