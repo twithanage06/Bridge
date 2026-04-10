@@ -26,7 +26,20 @@
 .user_box:hover{
     border: 2px solid black;
 }
-
+.mounts_box{
+    position: fixed;
+    left: 50%;
+    top: 9vh; 
+    transform: translateX(-50%);      
+    width: 58%;     
+    height: calc(100vh - 10vh); 
+    background-color: #2a2438; 
+    border-right: 1px solid #443c5a;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    border-radius: 20px;
+}
 
 .mounts_box:hover{
     outline: 1px solid #F0EAD6;
@@ -40,40 +53,15 @@
     border: 2px solid black;
 }
 
-
-.mounts_box {
-    width: 55%;
-    height: 100%;       
-    border: 1px solid black;
-    border-radius: 10px;
-    padding: 15px; 
-    overflow-y: auto;   
-    overflow-x: hidden; 
-    box-sizing: border-box; 
+.mounts{
+    background-color: #d1cbba;
+    color: black;
+    width: 100%;             
+    margin-bottom: 10px;    
+    padding: 15px;
+    box-sizing: border-box;
+    border-radius: 10px;    
+    display: flex; 
+    justify-content: space-between;
+    align-items: center;
 }
-
-
-.mounts {
-    display: flex;
-    justify-content: space-between; 
-    align-items: center; 
-    width: 100%;       
-    min-height: 50px;   
-    height: auto;
-    margin-bottom: 10px; 
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-sizing: border-box; 
-}
-
-.mounts h2 {
-    font-size: 0.9rem;  
-    margin: 0;          
-    padding: 0 5px;
-    white-space: nowrap;     
-    overflow: hidden;         
-    text-overflow: ellipsis;  
-    flex: 1; 
-}
-
