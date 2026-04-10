@@ -46,12 +46,12 @@
     border: 2px solid black;
 }
 
-.mounts{
-    border:1px solid black;
+.mounts {
+    border: 1px solid black;
     color: black;
-    width: 100%;             
-    margin-bottom: 10px;    
-    padding: 15px;
+    width: 90%;              
+    margin: 0 auto 10px auto; 
+    padding: 10px 15px;      
     box-sizing: border-box;
     border-radius: 10px;    
     display: flex; 
