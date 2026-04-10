@@ -1,0 +1,27 @@
+{% extends 'account_setup_base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+<img src="static/imgs/account_setup.jpeg">
+<h1>Bridge</h1>
+<h2>We've noticed you haven't done the setup before!</h2>
+<h2>So let's get you setup with an admin account</h2>
+{% if rank == "admin" %}
+<form id="login_details" action="/admin_setup" method="post">
+    <div>
+        <h3>Username:</h3>
+        <input type="text" id="usr_input" name="usrnme" oninput="login_formatting()">
+        <h3 id="psswrd_txt"></h3>
+        <input type="password" id = "psswrd_input" name="psswrd" oninput="login_formatting()" style = "display: none;">
+        <button type="button" id="cont_btn" onclick="submit_login_info()" style = "display: none;">Continue</button>
+    </div>
+</form>
+{% if duplicate_name %}
+    <h3 style="color:indianred; font-weight: bold;">{{ duplicate_name }}</h3>
+{% endif %}
+{% else %}
+<!-- Add User code here -->
+{% endif %}
+{% endblock %}
