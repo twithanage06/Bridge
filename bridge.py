@@ -1,6 +1,6 @@
 #Author/s: Thanuja Athuruliya Withanage
 #Date: 10/04/2026
-#Version: 0.0.0
+#Version: 0.0.5
 
 from flask import Flask, render_template, url_for, request, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -35,6 +35,7 @@ class Drive(db.Model):
     __bind_key__ = 'drives_db'
     id = db.Column(db.Integer, primary_key=True)
     drive_name = db.Column(db.String(20), unique=True, nullable=False)
+    drive_used = db.Column(db.String(20), nullable=False)
     drive_size = db.Column(db.String(20), nullable=False)
     drive_mnt = db.Column(db.String(50), unique=True, nullable=False)
     user_connection = db.Column(db.String(20))
@@ -56,9 +57,10 @@ def get_drives():
                         # Get name and size in one-liners
                         name = path.split('/')[-1]
                         usage = shutil.disk_usage(path)
-                        size_info = f"{usage.used // (2**30)}GB / {usage.total // (2**30)}GB"
+                        size_used = usage.used // (2**30)
+                        size_total = usage.total // (2**30)
                         
-                        db.session.add(Drive(drive_name=name, drive_size=size_info, drive_mnt=path, user_connection="None"))
+                        db.session.add(Drive(drive_name=name, drive_used=size_used,drive_size = size_total, drive_mnt=path, user_connection="None"))
 
         db.session.commit()
     except Exception as e:
@@ -69,6 +71,8 @@ def get_drives():
 
 @app.route("/admin_dashboard", methods=["POST","GET"])
 def admin_dashboard():
+    if request.method == "POST":
+        drive_name = request.get_data("drive_name")
     get_drives()
     all_drives = Drive.query.all()
     return render_template("/admin_dashboard.html", drives=all_drives)
