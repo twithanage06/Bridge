@@ -52,7 +52,7 @@
     box-sizing: border-box; 
 }
 
-/* 2. The Row Item */
+
 .mounts {
     display: flex;
     justify-content: space-between; 
@@ -67,7 +67,6 @@
     box-sizing: border-box; 
 }
 
-/* 3. The Text (Column Control) */
 .mounts h2 {
     font-size: 0.9rem;  
     margin: 0;          
@@ -75,6 +74,6 @@
     white-space: nowrap;     
     overflow: hidden;         
     text-overflow: ellipsis;  
-    flex: 1;                  
+    flex: 1; 
 }
 
