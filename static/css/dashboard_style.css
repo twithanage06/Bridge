@@ -45,23 +45,28 @@
     border: 2px solid black;
 }
 
+.mounts_box {
+    width: 55%;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 15px; /* Add some padding so items aren't touching edges */
+    overflow-y: auto; /* Allows scrolling if you have many drives */
+}
 
 .mounts {
     display: flex;
     justify-content: space-between; 
-    align-items: center; 
+    align-items: center; /* Keeps text aligned horizontally */
     width: 100%;
-    height: auto; 
-    margin-bottom: 10px; 
+    height: auto; /* Changed from calc to auto */
+    margin-bottom: 10px; /* Space between the drive boxes */
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 8px;
 }
 
+/* Make the headers look more like list items than big titles */
 .mounts h2 {
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin: 0;
-    flex: 1; /* This makes each piece of text take up equal space */
-    text-align: left;
-    font-weight: 500;
 }
