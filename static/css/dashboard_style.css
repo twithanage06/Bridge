@@ -42,3 +42,28 @@
 .activity_box:hover{
     border: 2px solid black;
 }
+.mounts_box {
+    width: 55%;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 15px; 
+    overflow-y: auto; 
+}
+
+.mounts {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    width: 100%;
+    height: auto; 
+    margin-bottom: 10px; 
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+
+.mounts h2 {
+    font-size: 1rem;
+    margin: 0;
+}

@@ -69,8 +69,8 @@ def get_drives():
 
 @app.route("/admin_dashboard", methods=["POST","GET"])
 def admin_dashboard():
-    
-    return render_template("/admin_dashboard.html")
+    all_drives = Drive.query.all()
+    return render_template("/admin_dashboard.html", drives=all_drives)
 
 @app.route("/admin_setup", methods=["POST", "GET"])
 def admin_setup():
@@ -106,8 +106,8 @@ def nuke_everything():
     with open("initial_setup.txt", "w") as f:
         f.write(default)
     with app.app_context():
-        db.drop_all()   # Deletes the tables
-        db.create_all() # Recreates them fresh
+        db.drop_all()   
+        db.create_all() 
     return "Database wiped. Try the setup again!"
 
 @app.route("/")
