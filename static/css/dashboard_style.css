@@ -49,9 +49,8 @@
 .mounts {
     border: 1px solid black;
     color: black;
-    width: 90%;              
-    margin: 0 auto 10px auto; 
-    padding: 10px 15px;      
+    width: 95%;              
+    margin-top: 10px;     
     box-sizing: border-box;
     border-radius: 10px;    
     display: flex; 
