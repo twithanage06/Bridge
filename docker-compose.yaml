@@ -7,7 +7,7 @@ services:
       - "5000:5000"
     volumes:
       - .:/bridge
-      - /mnt/storage/cloud1:/mnt/cloud1
+      - /mnt/my_fake_drive:/mnt/cloud1
 
     environment:
       - FLASK_ENV=development

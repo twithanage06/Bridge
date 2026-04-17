@@ -8,13 +8,28 @@
 <div class = "header">
     <h1 style="margin: 0;">Bridge.</h1>
 </div>
+<form id="details_form" action="/admin_dashboard" method="post">
 <div class="info_box">
     <div class="user_box">
+        <input type="hidden" id="selected_user" name="user_name_input" value="">
+        {% if users %}
+            {% for user in users %}
+                <div class="users" onclick="chosen_user('{{ user.username }}')">
+                    <h2>{{ user.username }}</h2>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <a href="{{ url_for('user_setup') }}">
+        <div>
+            <h2>Add User</h2>
+        </div>
+        </a>
     </div>
 
     <div class="mounts_box">
+        <input type="hidden" id="selected_drive" name="drive_name_input" value="">
         {% for drive in drives %}
-            <div class="mounts">
+            <div class="mounts" onclick="chosen_drive('{{ drive.drive_name }}')">
                 <h2>{{ drive.drive_name }}</h2>
                 <h2>{{ drive.drive_mnt }}</h2>
             </div>
@@ -22,6 +37,15 @@
     </div>
 
     <div class="activity_box">
+        {% if drive_activity %}
+            <h3>Total Space: {{ drive_size }} GB</h3>
+            <h3>Used Space: {{ drive_used }} GB</h3>
+            <br>
+            <h3>Free Space: {{ drive_free }} GB</h3>
+        {% elif user_activity %}
+            <h3>Drives: {{ user_drives }}</h3>
+        {% endif %}
     </div>
 </div>
+</form>
 {% endblock %}

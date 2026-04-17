@@ -1,0 +1,34 @@
+{% extends 'account_setup_base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+<h1>Bridge</h1>
+<h2>Order for {{ user }}?</h2>
+<h2>Available Drives</h2>
+<form id="drive_chosen" action="/user_drive_setup" method="post">
+    <input type="hidden" id="selected_drive" name="selected_drive_name" value="">
+    <input type="hidden" name="hidden_username" value="{{ user }}">
+<table>
+    <thead>
+        <tr>
+            <th>Filesystem</th>
+            <th>Size</th>
+            <th>Connections</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for drive in drives %}
+        <tr class="clickable-row" onclick="submitDrive('{{ drive.drive_name }}')">
+            <td>{{ drive.drive_name }}</td>
+            <td>{{ drive.drive_size | round(2) }}GB</td>
+            <td>{{ drive.user_connection }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</form>
+
+
+{% endblock %}

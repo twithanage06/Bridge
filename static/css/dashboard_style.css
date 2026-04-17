@@ -58,3 +58,7 @@
     justify-content: space-between;
     align-items: center;
 }
+
+.mounts:hover{
+    border: 2px solid black;
+}

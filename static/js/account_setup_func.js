@@ -32,3 +32,10 @@ function login_formatting(){
 function submit_login_info(){
     document.getElementById("login_details").submit();
 }
+
+function submitDrive(driveName) {
+        // Set the hidden input's value to the drive name we clicked
+        document.getElementById('selected_drive').value = driveName;
+        // Submit the form
+        document.getElementById('drive_chosen').submit();
+}
