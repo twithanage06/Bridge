@@ -10,14 +10,19 @@ import subprocess as sp
 import yaml
 import os
 import shutil
+from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
-#Initialises the app and databses
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' 
+# Use the absolute path inside the container
+instance_path = "/Bridge/instance" 
+
+app = Flask(__name__, instance_path=instance_path)
+
+# Ensure the DBs are explicitly inside that absolute path
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Bridge/instance/site.db'
 app.config['SQLALCHEMY_BINDS'] = {
-    'users_db': 'sqlite:///users.db',
-    'drives_db': 'sqlite:///drives.db'
+    'users_db': 'sqlite:////Bridge/instance/users.db',
+    'drives_db': 'sqlite:////Bridge/instance/drives.db'
 }
 db = SQLAlchemy(app)
 
@@ -165,7 +170,7 @@ def user_setup():
 
 @app.route("/user_drive_setup", methods=["POST", "GET"])
 def user_drive_setup():
-    drives = Drive.query.all()
+    drives = Drive.query.filter_by(user_connection="None").all()
     passed_user = request.args.get('username')
     if request.method == "POST":
         clicked_drive = request.form.get("selected_drive_name")
@@ -174,9 +179,51 @@ def user_drive_setup():
         drive_to_connect = Drive.query.filter_by(drive_name=clicked_drive).first()
         if drive_to_connect:
             drive_to_connect.user_connection = passed_user
-            db.session.commit()
-            return redirect('/admin_dashboard')
+            user_dir = os.path.join(drive_to_connect.drive_mnt, passed_user)
+            try:
+                if not os.path.exists(user_dir):
+                    os.makedirs(user_dir, mode=0o777)
+                    os.chmod(user_dir, 0o777)
+                db.session.commit()
+                return redirect('/admin_dashboard')
+            except OSError as e:
+                db.session.rollback()
+                print(f"Directory creation failed: {e}")
     return render_template("/drive_setup.html", drives=drives, user=passed_user)
+
+@app.route("/user_dashboard", methods=["POST", "GET"])
+def user_dashboard():
+    passed_user = request.args.get('username')
+    drive = Drive.query.filter_by(user_connection=passed_user).first()
+    
+    file_details = []
+    
+    if drive:
+        user_folder_path = os.path.join(drive.drive_mnt, passed_user)
+        try:
+            if os.path.exists(user_folder_path):
+                with os.scandir(user_folder_path) as entries:
+                    for entry in entries:
+                        if entry.is_file():
+                            stats = entry.stat()
+                            raw_bytes = stats.st_size
+                            if raw_bytes > 1024**3:
+                                size_readable = f"{round(raw_bytes / (1024), 2)} GB"
+                            elif raw_bytes > 1024**2:
+                                size_readable = f"{round(stats.st_size / (1024), 2)} MB"
+                            elif raw_bytes > 1024:
+                                size_readable = f"{round(stats.st_size / (1024), 2)} KB"
+                            else:
+                                size_readable = f"{raw_bytes} B"
+                            file_details.append({
+                                "name": entry.name,
+                                "size": size_readable,
+                                "modified": datetime.fromtimestamp(stats.st_mtime).strftime('%Y-%m-%d %H:%M')
+                            })
+        except Exception as e:
+            print(f"Error accessing drive: {e}")
+            
+    return render_template('user_dashboard.html', files=file_details, username=passed_user)
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
@@ -185,7 +232,6 @@ def login():
     if request.method == "POST":
         username = request.form.get("usrnme").strip()
         password = request.form.get("psswrd")
-        encrypted_psswd = generate_password_hash(password)
 
         find_user = User.query.filter_by(username=username).first()
         if find_user:
@@ -193,7 +239,7 @@ def login():
                 if find_user.rank == "admin":
                     return redirect("/admin_dashboard")
                 else:
-                    pass
+                    return redirect(url_for("user_dashboard", username=username))
             else:
                 incorrect_password = True
         else:
@@ -234,5 +280,7 @@ def root():
     
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
     app.run(host = '0.0.0.0', port='5000', debug="True")
     

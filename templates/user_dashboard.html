@@ -1,0 +1,40 @@
+{% extends 'dashboard_base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+
+<div class = "header">
+    <h1 style="margin: 0;">Bridge.</h1>
+</div>
+<div class="info_box">
+    <div class = "files_box">
+    <table>
+        <thead>
+            <tr>
+            <th>Filename</th>
+            <th>Size</th>
+            <th>Date Modified</th>
+            </tr>
+        </thead>
+        <form id="login_details" action="/admin_setup" method="post">
+        <tbody>
+            {% for file in files %}
+            <tr>
+                <td>{{ file.name }}</td>
+                <td>{{ file.size }}</td>
+                <td>{{ file.modified }}</td>
+            </tr>    
+            {% else %}
+            <tr><td>No files found</td></tr>
+            {% endfor %}
+        </tbody>
+        </form>
+    </table>
+    </div>
+    <div class = "files_info_box">
+
+    </div>
+</div>
+{% endblock %}

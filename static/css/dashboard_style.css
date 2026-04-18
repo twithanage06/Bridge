@@ -62,3 +62,26 @@
 .mounts:hover{
     border: 2px solid black;
 }
+
+.files_box{
+    width: 70%;     
+    border: 1px solid black;
+    box-sizing: border-box;
+    overflow-y: auto;
+    border-radius: 20px;
+}
+
+.files_box:hover{
+    outline: 1px solid black;
+}
+.files_info_box{
+    width: 29%;     
+    border: 1px solid black;
+    box-sizing: border-box;
+    overflow-y: auto;
+    border-radius: 20px;
+}
+
+.files_info_box:hover{
+    outline: 1px solid black;
+}

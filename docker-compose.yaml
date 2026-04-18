@@ -8,6 +8,7 @@ services:
     volumes:
       - .:/bridge
       - /mnt/my_fake_drive:/mnt/cloud1
+      - ./instance:/Bridge/instance
 
     environment:
       - FLASK_ENV=development
