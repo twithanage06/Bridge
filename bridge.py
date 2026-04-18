@@ -1,6 +1,6 @@
 #Author/s: Thanuja Athuruliya Withanage
 #Date: 10/04/2026
-#Version: 0.0.7
+#Version: 0.0.8
 
 from flask import Flask, render_template, url_for, request, redirect, jsonify
 from flask_sqlalchemy import SQLAlchemy
