@@ -198,9 +198,7 @@ def download_file(username, filename):
     if drive:
         user_folder_path = os.path.join(drive.drive_mnt, username)
         try:
-            return send_from_directory(directory=user_folder_path, 
-                                       path=filename, 
-                                       as_attachment=True)
+            return send_from_directory(directory=user_folder_path, path=filename, as_attachment=True)
         except FileNotFoundError:
             return "File not found.", 404
             
@@ -215,18 +213,14 @@ def user_dashboard():
     selected_file = None
     
     if request.method == "POST":
-        # Check if the user clicked the Upload button
         if 'file_to_upload' in request.files:
             file = request.files['file_to_upload']
             if file and file.filename != '' and drive:
                 user_folder_path = os.path.join(drive.drive_mnt, passed_user)
-                # Ensure folder exists and save file
                 os.makedirs(user_folder_path, exist_ok=True)
                 file.save(os.path.join(user_folder_path, file.filename))
-                # Refresh page to show new file
                 return redirect(url_for('user_dashboard', username=passed_user))
 
-        # Handle row selection for downloading
         selected_file = request.form.get("selected_file")
         if selected_file:
             file_selected = True
@@ -243,9 +237,9 @@ def user_dashboard():
                             stats = entry.stat()
                             raw_bytes = stats.st_size
                             if raw_bytes > 1024**3:
-                                size_readable = f"{round(raw_bytes / (1024), 2)} GB"
+                                size_readable = f"{round(raw_bytes / (1024**3), 2)} GB"
                             elif raw_bytes > 1024**2:
-                                size_readable = f"{round(stats.st_size / (1024), 2)} MB"
+                                size_readable = f"{round(stats.st_size / (1024**2), 2)} MB"
                             elif raw_bytes > 1024:
                                 size_readable = f"{round(stats.st_size / (1024), 2)} KB"
                             else:
