@@ -8,7 +8,9 @@
 <div class = "header">
     <h1 style="margin: 0;">Bridge.</h1>
 </div>
-<div class="info_box">
+<div class="user_info_box">
+    <form id="details_form" class = "flex_form" action="/user_dashboard?username={{ username }}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="selected_file" id="selected_file">
     <div class = "files_box">
     <table>
         <thead>
@@ -18,10 +20,10 @@
             <th>Date Modified</th>
             </tr>
         </thead>
-        <form id="login_details" action="/admin_setup" method="post">
         <tbody>
+            
             {% for file in files %}
-            <tr>
+            <tr onclick="chosen_file('{{ file.name }}')">
                 <td>{{ file.name }}</td>
                 <td>{{ file.size }}</td>
                 <td>{{ file.modified }}</td>
@@ -29,12 +31,26 @@
             {% else %}
             <tr><td>No files found</td></tr>
             {% endfor %}
+            
         </tbody>
-        </form>
+        
     </table>
     </div>
-    <div class = "files_info_box">
-
+    <div class = "ud_box">
+        <div class = "files_info_box">
+            {% if file_selected %}
+            <h3>{{ selected_file }}</h3>
+            <a href="{{ url_for('download_file', username=username, filename=selected_file) }}">
+            <button type="button">Download</button>
+            </a>
+            {% endif %}
+        </div>
+        <div class = "files_upload_box">
+            <input type="file" name="file_to_upload" id="file_to_upload" style="width: 80%;">
+            <button type="submit" name="action" value="upload">Upload to Cloud</button>
+            </a>
+        </div>
     </div>
+    </form>
 </div>
 {% endblock %}

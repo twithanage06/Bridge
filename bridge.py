@@ -1,8 +1,8 @@
 #Author/s: Thanuja Athuruliya Withanage
 #Date: 10/04/2026
-#Version: 0.0.8
+#Version: 0.1.0
 
-from flask import Flask, render_template, url_for, request, redirect, jsonify
+from flask import Flask, render_template, url_for, request, redirect, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import numpy as np
@@ -191,11 +191,46 @@ def user_drive_setup():
                 print(f"Directory creation failed: {e}")
     return render_template("/drive_setup.html", drives=drives, user=passed_user)
 
+@app.route("/download/<username>/<path:filename>")
+def download_file(username, filename):
+    drive = Drive.query.filter_by(user_connection=username).first()
+    
+    if drive:
+        user_folder_path = os.path.join(drive.drive_mnt, username)
+        try:
+            return send_from_directory(directory=user_folder_path, 
+                                       path=filename, 
+                                       as_attachment=True)
+        except FileNotFoundError:
+            return "File not found.", 404
+            
+    return "Drive connection not found.", 404
+
 @app.route("/user_dashboard", methods=["POST", "GET"])
 def user_dashboard():
     passed_user = request.args.get('username')
     drive = Drive.query.filter_by(user_connection=passed_user).first()
     
+    file_selected = False
+    selected_file = None
+    
+    if request.method == "POST":
+        # Check if the user clicked the Upload button
+        if 'file_to_upload' in request.files:
+            file = request.files['file_to_upload']
+            if file and file.filename != '' and drive:
+                user_folder_path = os.path.join(drive.drive_mnt, passed_user)
+                # Ensure folder exists and save file
+                os.makedirs(user_folder_path, exist_ok=True)
+                file.save(os.path.join(user_folder_path, file.filename))
+                # Refresh page to show new file
+                return redirect(url_for('user_dashboard', username=passed_user))
+
+        # Handle row selection for downloading
+        selected_file = request.form.get("selected_file")
+        if selected_file:
+            file_selected = True
+            
     file_details = []
     
     if drive:
@@ -223,7 +258,7 @@ def user_dashboard():
         except Exception as e:
             print(f"Error accessing drive: {e}")
             
-    return render_template('user_dashboard.html', files=file_details, username=passed_user)
+    return render_template('user_dashboard.html', files=file_details, username=passed_user, file_selected=file_selected, selected_file=selected_file)
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
