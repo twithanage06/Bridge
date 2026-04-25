@@ -64,7 +64,12 @@
 }
 
 .files_box{
-    width: 70%;     
+    display: flex;
+    flex-direction: column; 
+    justify-content: flex-start; 
+    gap: 15px; 
+    padding: 15px;
+    width: 33%;     
     border: 1px solid black;
     box-sizing: border-box;
     overflow-y: auto;
@@ -91,15 +96,15 @@
 }
 .ud_box {
     display: flex;
-    flex-direction: column; /* Stacks items vertically */
+    flex-direction: column; 
     justify-content: space-between; 
-    width: 29%; /* Matches the width you previously gave the info boxes */
-    height: 100%; /* Take up the full height of the parent form */
+    width: 33%; 
+    height: 100%; 
 }
 
 .files_info_box, .files_upload_box {
-    width: 100%; /* Take up the full width of the ud_box container */
-    height: 49%; /* Leave 2% for the gap/space-between */
+    width: 100%; 
+    height: 49.5%; 
     border: 1px solid black;
     box-sizing: border-box;
     overflow-y: auto;
@@ -111,5 +116,37 @@
 }
 
 .files_upload_box:hover{
+    outline: 1px solid black;
+}
+
+.file_managing {
+    display: flex;
+    flex-direction: row; 
+    justify-content: space-between; 
+    align-items: center; 
+    
+    width: 100%; 
+    height: 30px; 
+}
+
+.files{
+    text-align: left;
+}
+
+.preview_box{
+    display: flex;
+    flex-direction: column; 
+    justify-content: flex-start; 
+    gap: 15px; 
+    padding: 15px;
+    width: 33%;     
+    border: 1px solid black;
+    box-sizing: border-box;
+    overflow-y: auto;
+    border-radius: 20px;
+    align-content: center;
+}
+
+.preview_box:hover{
     outline: 1px solid black;
 }
