@@ -1,12 +1,11 @@
 #Author/s: Thanuja Athuruliya Withanage
 #Date: 10/04/2026
-#Version: 0.1.5
+#Version: 0.2.0
 #Imports
-from flask import Flask, render_template, url_for, request, redirect, send_from_directory
+from flask import Flask, render_template, url_for, request, redirect, send_from_directory, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-import numpy as np
-import subprocess as sp
+import shutil
 import yaml
 import os
 import shutil
@@ -18,6 +17,7 @@ from werkzeug.utils import secure_filename
 #global variables
 logged_in_admin = False
 logged_in_user = False
+
 #End of global variables
 
 
@@ -31,6 +31,7 @@ app.config['SQLALCHEMY_BINDS'] = {
     'drives_db': 'sqlite:////Bridge/instance/drives.db'
 }
 db = SQLAlchemy(app)
+app.secret_key = 'super_secret_random_string' # Change this to something unique
 #End app initialisation
 
 #Initialise databases
@@ -118,9 +119,14 @@ def admin_dashboard():
     drive_used_print = None
     drive_free_print = None
     user_drive_connection = None
+    selected_drive_name = None
+    selected_user_name = None
     #print("Hello", flush=True)
 
     if request.method == "POST":
+        #This is just to keep a selected item highlighted
+        selected_user_name = request.form.get('user_name_input')
+        selected_drive_name = request.form.get('drive_name_input')
         #Get the user selcted or drive selected (it can only be one or the other since the details are printed on the same box)
         drive_name = request.form.get("drive_name_input")
         user_name = request.form.get("user_name_input")
@@ -137,6 +143,11 @@ def admin_dashboard():
                 drive_used_print = round(float(drive_used), 2)
                 drive_free = float(drive_details.drive_size) - float(drive_details.drive_used)
                 drive_free_print = round(drive_free, 2)
+                user_drive_connection = drive_details.user_connection
+                if user_drive_connection:
+                    user_drive = user_drive_connection
+                else:
+                    user_drive = "No connections"
                 #Debugging
                 print(f"Admin clicked on: {drive_details.drive_name}", flush=True)
                 print(f"It is mounted at: {drive_details.drive_mnt}", flush=True)
@@ -157,7 +168,7 @@ def admin_dashboard():
     get_drives()
     #This helps print the drives on the gui
     all_drives = Drive.query.all()
-    return render_template("/admin_dashboard.html", drives=all_drives, drive_size=drive_size_print, drive_used=drive_used_print, drive_free=drive_free_print, users=users, drive_activity=drive_activity, user_activity=user_activity, user_drives=user_drive)
+    return render_template("/admin_dashboard.html", drives=all_drives, drive_size=drive_size_print, drive_used=drive_used_print, drive_free=drive_free_print, users=users, drive_activity=drive_activity, user_activity=user_activity, user_drives=user_drive, selected_user_name=selected_user_name, selected_drive_name=selected_drive_name)
 
     
 @app.route("/admin_setup", methods=["POST", "GET"])
@@ -165,9 +176,16 @@ def admin_setup():
     """
     Handles the admin setup
     """
+    global logged_in_admin
     #Ensure the drive knows this an admin 
     rank = "admin"
     name_taken = None
+    no_admin = True
+    admins = User.query.filter_by(rank="admin").first()
+    if admins:
+        no_admin = False
+        return render_template('/login.html')
+
     if request.method == "POST":
         #Grabs the username and password entered in the gui
         username = request.form.get("usrnme").strip()
@@ -179,76 +197,97 @@ def admin_setup():
         try:
             db.session.add(new_admin)
             db.session.commit()
+            logged_in_admin = True
             return redirect('/admin_dashboard')
         except:
             #If its a duplicate username then it does not add the user and informs the user through the gui
             print("duplicate name")
+            logged_in_admin = False
             db.session.rollback()
             name_taken = "Error admin with that name already exists!"
             return render_template("/account_setup.html", rank=rank, duplicate_name = name_taken)
         
-    return render_template('/account_setup.html', rank=rank, duplicate_name=name_taken)
+    return render_template('/account_setup.html', rank=rank, duplicate_name=name_taken, no_admin=no_admin)
 
 @app.route("/user_setup", methods=["POST", "GET"])
 def user_setup():
     """
-    Handles the user setup, essentially the same code as the admin_setup
+    Step 1: Collect user info and store it in a session.
+    No database insertion happens here.
     """
-    #Make the database know this a user (i.e less priveleges than admin)
     rank = "user"
     name_taken = None
+
     if request.method == "POST":
         username = request.form.get("usrnme").strip()
         password = request.form.get("psswrd")
-        encrypted_psswd = generate_password_hash(password)
 
-        new_user = User(rank=rank, username=username, password_hash=encrypted_psswd)
-        try:
-            db.session.add(new_user)
-            db.session.commit()
-            #sends the user_drive_setup function the username to continue
-            return redirect(url_for('user_drive_setup', username=username))
-        except:
-            print("duplicate name")
-            db.session.rollback()
-            name_taken = "Error user with that name already exists!"
-            return render_template("/account_setup.html", rank=rank, duplicate_name = name_taken)
+        # Check if the name exists before moving forward
+        if User.query.filter_by(username=username).first():
+            name_taken = "Error: User with that name already exists!"
+            return render_template("/account_setup.html", rank=rank, duplicate_name=name_taken)
+
+        #Store data in session instead of the DB
+        #This keeps the hash out of the URL
+        session['temp_user_data'] = {
+            'username': username,
+            'password_hash': generate_password_hash(password),
+            'rank': rank
+        }
+
+        return redirect(url_for('user_drive_setup'))
+
     return render_template('/account_setup.html', rank=rank, duplicate_name=name_taken)
+
 
 @app.route("/user_drive_setup", methods=["POST", "GET"])
 def user_drive_setup():
     """
-    Sets up the drives connected to a user
+    Step 2: Assign a drive and perform the final 'Atomic' database commit.
     """
-    #This only gets the drives with no user connection (i.e a free drive)
+    #Ensures they actually came from the setup page
+    user_data = session.get('temp_user_data')
+    if not user_data:
+        return redirect(url_for('user_setup'))
+
+    # Get available drives
     drives = Drive.query.filter_by(user_connection="None").all()
-    #Get the username from the user_setup function
-    passed_user = request.args.get('username')
+
     if request.method == "POST":
-        #Get the drive the user clicked on
         clicked_drive = request.form.get("selected_drive_name")
-        passed_user = request.form.get("hidden_username")
-        #Debugging
-        print(f"User clicked on drive: {clicked_drive}", flush=True)
-        #Find the drive in the Drive database
         drive_to_connect = Drive.query.filter_by(drive_name=clicked_drive).first()
-        #If it exists
+
         if drive_to_connect:
-            #Connect the user to the drive
-            drive_to_connect.user_connection = passed_user
-            #Make a directory for that user within the drive
-            user_dir = os.path.join(drive_to_connect.drive_mnt, passed_user)
-            #Makes the user folder in the file
             try:
+                #This ensures a new user is only added once they connect the user to a drive
+                new_user = User(
+                    rank=user_data['rank'],
+                    username=user_data['username'],
+                    password_hash=user_data['password_hash']
+                )
+                db.session.add(new_user)
+                drive_to_connect.user_connection = user_data['username']
+
+
+                user_dir = os.path.join(drive_to_connect.drive_mnt, user_data['username'])
                 if not os.path.exists(user_dir):
                     os.makedirs(user_dir, mode=0o777)
                     os.chmod(user_dir, 0o777)
+
+
                 db.session.commit()
+
+
+                session.pop('temp_user_data', None)
+
                 return redirect('/admin_dashboard')
-            except OSError as e:
+
+            except Exception as e:
                 db.session.rollback()
-                print(f"Directory creation failed: {e}")
-    return render_template("/drive_setup.html", drives=drives, user=passed_user)
+                print(f"Critical failure during user/drive creation: {e}")
+                return "Internal Server Error", 500
+
+    return render_template("/drive_setup.html", drives=drives, user=user_data['username'])
 
 @app.route("/download/<username>/<path:filename>")
 def download_file(username, filename):
@@ -307,6 +346,49 @@ def view_file(username, filename):
             
     return "Drive connection not found.", 404
 
+@app.route("/delete/<username>/<path:filename>", methods=["POST"])
+def delete_item(username, filename):
+    """
+    Handles deleting the file from the drive
+    - username: Need to know what drive the file is stored in so the username will find the drive/s that it will exist in
+    - filename: the file the user is trying to delete
+    """
+    #Verifies that there is a drive that this user is connected to
+    drive = Drive.query.filter_by(user_connection=username).first()
+    if not drive:
+        return "Drive connection not found.", 404
+
+    #Find the directory where the file is stored
+    user_root = os.path.join(drive.drive_mnt, username)
+    target_path = os.path.normpath(os.path.join(user_root, filename))
+
+    # Security check
+    if not target_path.startswith(os.path.abspath(user_root)):
+        return "Unauthorized action.", 403
+
+    try:
+        #Deletes the file
+        if os.path.exists(target_path):
+            if os.path.isdir(target_path):
+                shutil.rmtree(target_path)
+            else:
+                os.remove(target_path)
+            
+            # Update the drive usage stats in the DB
+            get_drives()
+            
+            #Figures out where to redirect after deleting
+            parent_dir = os.path.dirname(filename)
+            
+            # Explicitly return to the dashboard
+            return redirect(url_for('user_dashboard', subpath=parent_dir))
+        else:
+            print(f"File not found at: {target_path}")
+            return "File not found.", 404
+    except Exception as e:
+        print(f"Delete failed with error: {e}")
+        return f"Error deleting item: {e}", 500
+    
 @app.route("/user_dashboard", methods=["POST", "GET"])
 def user_dashboard():
     """
@@ -319,7 +401,8 @@ def user_dashboard():
     if not logged_in_user:
         return redirect('/login')
     #Get the username from the login page
-    passed_user = request.args.get('username')
+    stored_user = session.get('username_data')
+    passed_user = stored_user["username"]
 
     #This gets the nested paths for nested folders
     subpath = request.args.get('subpath', '') 
@@ -330,6 +413,7 @@ def user_dashboard():
         return "Drive not found", 404
     used_space = drive.drive_used
     total_space = drive.drive_size
+    space_left_kb = (total_space-used_space)*(2**20)
     used_percentage = round((used_space / total_space) * 100, 2)
 
     #Gets the base directory and stores it
@@ -362,7 +446,7 @@ def user_dashboard():
                 file.save(os.path.join(target_path, safe_name))
                 #Updates the drive info
                 get_drives()
-                return redirect(url_for('user_dashboard', username=passed_user, subpath=subpath))
+                return redirect(url_for('user_dashboard', subpath=subpath))
 
         #Handles the new folder feature
         folder_name = request.form.get("folder_name")
@@ -374,7 +458,7 @@ def user_dashboard():
             #Actually makes the folder
             try:
                 os.makedirs(full_new_folder_path, exist_ok=True)
-                return redirect(url_for('user_dashboard', username=passed_user, subpath=subpath))
+                return redirect(url_for('user_dashboard', subpath=subpath))
             except Exception as e:
                 print(f"Error creating folder: {e}")
 
@@ -430,7 +514,7 @@ def user_dashboard():
         if parent_subpath in ['.', '/'] or parent_subpath == subpath:
             parent_subpath = ''
 
-    return render_template('user_dashboard.html', files=file_details, username=passed_user, used_percentage=used_percentage,current_subpath=subpath,parent_subpath=parent_subpath,file_selected=file_selected,selected_file=selected_file)
+    return render_template('user_dashboard.html', files=file_details, username=passed_user,drive_size = space_left_kb, used_percentage=used_percentage,current_subpath=subpath,parent_subpath=parent_subpath,file_selected=file_selected,selected_file=selected_file)
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
@@ -461,7 +545,10 @@ def login():
                     return redirect("/admin_dashboard")
                 else:
                     logged_in_user = True
-                    return redirect(url_for("user_dashboard", username=username))
+                    session['username_data'] = {
+                        'username': username,
+                    }
+                    return redirect("/user_dashboard")
                     
             else:
                 incorrect_password = True

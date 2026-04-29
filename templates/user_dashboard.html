@@ -1,4 +1,4 @@
-{% extends 'dashboard_base.html' %}
+{% extends 'user_dashboard_base.html' %}
 
 {% block body %}
 <div class="header">
@@ -6,15 +6,11 @@
 </div>
 
 <div class="user_info_box">
-    <form id="details_form" class="flex_form" 
-      action="{{ url_for('user_dashboard', username=username, subpath=current_subpath) }}" 
-      method="post" 
-      enctype="multipart/form-data">
+    <form id="details_form" action="{{ url_for('user_dashboard', username=username, subpath=current_subpath) }}" method="post" style="display: flex; width: 66%; justify-content: space-between;">
         
         <input type="hidden" name="selected_file" id="selected_file" value="{{ selected_file if selected_file else '' }}">
 
-
-        <div class="preview_box">
+        <div class="preview_box" style="width: 49%;">
             {% if file_selected %}
                 <iframe src="{{ url_for('view_file', username=username, filename=selected_file) }}" 
                         width="100%" height="100%" style="border: none; border-radius: 20px;">
@@ -26,16 +22,17 @@
             {% endif %}
         </div>
 
-        <div class="files_box">
+        <div class="files_box" style="width: 49%;">
             <div class="file_managing">
-                        {% if parent_subpath is not none %}
-                        <a href="{{ url_for('user_dashboard', username=username, subpath=parent_subpath) }}" class="btn btn-secondary mb-3">
-                        Back to Parent Folder
-                        </a>
-                        {% endif %}
+                {% if parent_subpath is not none %}
+                    <a href="{{ url_for('user_dashboard', username=username, subpath=parent_subpath) }}" class="btn btn-secondary mb-3">
+                        Back
+                    </a>
+                {% endif %}
 
                 <input type="search" id="searchBar" placeholder="Search through files..." oninput="search_term()">
-                <h4>{{ used_percentage }}% of the drive used</h4>
+                <h4>{{ used_percentage }}% used</h4>
+                
                 <div>
                     <input type="text" id="folder_name" placeholder="Folder Name...." name="folder_name">
                     <button type="submit" id="create_folder">Create Folder</button>
@@ -46,22 +43,23 @@
                 <thead>
                     <tr>
                         <th>Filename</th>
-                        <th>Type</th> <th>Size</th>
+                        <th>Type</th> 
+                        <th>Size</th>
                         <th>Date Modified</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for file in files %}
-                    <tr class = "file-row">
+                    <tr class="file-row">
                         <td class="file-name">
                             {% if file.type == 'Folder' %}
                                 <a href="{{ url_for('user_dashboard', username=username, subpath=file.rel_path) }}">
-                                {{ file.name }}
+                                    📁 {{ file.name }}
                                 </a>
                             {% else %}
                                 <a href="javascript:void(0);" 
                                    onclick="document.getElementById('selected_file').value='{{ file.rel_path }}'; document.getElementById('details_form').submit();">
-                                    {{ file.name }}
+                                    📄 {{ file.name }}
                                 </a>
                             {% endif %}
                         </td>
@@ -73,20 +71,43 @@
                 </tbody>
             </table>
         </div>
-
-        <div class="ud_box">
-            <div class="files_info_box">
-                {% if file_selected %}
-                <h3>{{ selected_file.split('/')[-1] }}</h3> <a href="{{ url_for('download_file', username=username, filename=selected_file) }}">
-                    <button type="button">Download</button>
-                </a>
-                {% endif %}
-            </div>
-            <div class="files_upload_box">
-                <input type="file" name="file_to_upload" id="file_to_upload" style="width: 80%;">
-                <button type="submit">Upload to Cloud</button>
-            </div>
-        </div>
     </form>
+
+    <div class="ud_box" style="width: 33%;">
+        <div class="files_info_box">
+            {% if file_selected %}
+                <h3>{{ selected_file.split('/')[-1] }}</h3> 
+                
+                <a href="{{ url_for('download_file', username=username, filename=selected_file) }}">
+                    <button type="button" style="width: 100%; margin-bottom: 10px;">Download</button>
+                </a>
+
+                <form action="{{ url_for('delete_item', username=username, filename=selected_file) }}" 
+                      method="POST" 
+                      onsubmit="return confirm('Are you sure you want to permanently delete this item?');">
+                    <button type="submit" style="width: 100%; background-color: #ff4444; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 10px;">
+                        Delete
+                    </button>
+                </form>
+            {% else %}
+                <div style="display: flex; height: 100%; align-items: center; justify-content: center; color: gray;">
+                    <p>File Details</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="files_upload_box">
+            <form action="{{ url_for('user_dashboard', username=username, subpath=current_subpath) }}" 
+                  method="post" enctype="multipart/form-data" style="padding: 15px;">
+                
+                <input type="file" name="file_to_upload" id="file_to_upload" style="width: 100%; margin-bottom: 10px;" 
+                       onchange="get_file_details('{{ drive_size | int }}')">
+                
+                <button type="submit" id="upload_btn" style="width: 100%; display: none;">Upload to Cloud</button>
+                
+                <div id="file-info" style="margin-top: 10px; font-size: 0.85em;"></div>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}

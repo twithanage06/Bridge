@@ -1,17 +1,17 @@
-{% extends 'account_setup_base.html' %}
+{% extends 'login_base.html' %}
 
 {% block head %}
 {% endblock %}
 
 {% block body %}
-<h1>Bridge</h1>
+<h1 class="typing_title">Bridge.</h1>
 <form id="login_details" action="/login" method="post">
-    <div>
+    <div class="user_input_box">
         <h3>Username:</h3>
-        <input type="text" id="usr_input" name="usrnme" oninput="login_formatting()">
+        <input type="text" class="user_input" id="usr_input" name="usrnme" oninput="login_formatting()">
         <h3 id="psswrd_txt"></h3>
-        <input type="password" id = "psswrd_input" name="psswrd" oninput="login_formatting()" style = "display: none;">
-        <button type="button" id="cont_btn" onclick="submit_login_info()" style = "display: none;">Continue</button>
+        <input type="password" class="user_input" id = "psswrd_input" name="psswrd" oninput="login_formatting()" style = "display: none;">
+        <button type="button" class="user_input_btn" id="cont_btn" onclick="submit_login_info()" style = "display: none;">Continue</button>
     </div>
 </form>
 {% if user_login %}

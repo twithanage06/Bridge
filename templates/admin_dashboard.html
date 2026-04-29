@@ -1,4 +1,4 @@
-{% extends 'dashboard_base.html' %}
+{% extends 'admin_dashboard_base.html' %}
 
 {% block head %}
 {% endblock %}
@@ -14,34 +14,38 @@
         <input type="hidden" id="selected_user" name="user_name_input" value="">
         {% if users %}
             {% for user in users %}
-                <div class="users" onclick="chosen_user('{{ user.username }}')">
+                <div class="users {% if user.username == selected_user_name %}selected{% endif %}" 
+                    onclick="chosen_user('{{ user.username }}', this)">
                     <h2>{{ user.username }}</h2>
                 </div>
             {% endfor %}
         {% endif %}
-        <a href="{{ url_for('user_setup') }}">
+        <a class="users add_user" href="{{ url_for('user_setup') }}">
         <div>
-            <h2>Add User</h2>
+            <h2>+ Add User</h2>
         </div>
         </a>
     </div>
 
     <div class="mounts_box">
         <input type="hidden" id="selected_drive" name="drive_name_input" value="">
-        {% for drive in drives %}
-            <div class="mounts" onclick="chosen_drive('{{ drive.drive_name }}')">
-                <h2>{{ drive.drive_name }}</h2>
-                <h2>{{ drive.drive_mnt }}</h2>
-            </div>
-        {% endfor %}
+            {% for drive in drives %}
+                <div class="mounts {% if drive.drive_name == selected_drive_name %}selected{% endif %}" 
+                    onclick="chosen_drive('{{ drive.drive_name }}', this)">
+                    <h2>{{ drive.drive_name }}</h2>
+                    <h2>{{ drive.drive_mnt }}</h2>
+                </div>
+            {% endfor %}
     </div>
 
     <div class="activity_box">
         {% if drive_activity %}
-            <h3>Total Space: {{ drive_size }} GB</h3>
-            <h3>Used Space: {{ drive_used }} GB</h3>
-            <br>
             <h3>Free Space: {{ drive_free }} GB</h3>
+            <br>
+            <h3>Total Space: {{ drive_size }} GB</h3>
+            <h3>Used Space: {{ drive_used }} GB</h3>   
+            <br>
+            <h3>Connected User: {{ user_drives }}</h3>         
         {% elif user_activity %}
             <h3>Drives: {{ user_drives }}</h3>
         {% endif %}

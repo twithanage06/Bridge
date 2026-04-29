@@ -1,34 +1,50 @@
 {% extends 'account_setup_base.html' %}
 
 {% block head %}
-{% endblock %}
+    {% endblock %}
 
 {% block body %}
-<h1>Bridge</h1>
-<h2>Order for {{ user }}?</h2>
-<h2>Available Drives</h2>
+<h1 class="drive_title">Bridge.</h1>
+
+
+
 <form id="drive_chosen" action="/user_drive_setup" method="post">
+    <div class="float_up_content">
+    <div class="centre_selection">
+    <h2>What drive shall {{ user }} use?</h2>
+    <h2>Available Drives</h2>
+    </div>
     <input type="hidden" id="selected_drive" name="selected_drive_name" value="">
     <input type="hidden" name="hidden_username" value="{{ user }}">
-<table>
-    <thead>
-        <tr>
-            <th>Filesystem</th>
-            <th>Size</th>
-            <th>Connections</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for drive in drives %}
-        <tr class="clickable-row" onclick="submitDrive('{{ drive.drive_name }}')">
-            <td>{{ drive.drive_name }}</td>
-            <td>{{ drive.drive_size | round(2) }}GB</td>
-            <td>{{ drive.user_connection }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-</form>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Filesystem</th>
+                <th>Size</th>
+                <th>Connections</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for drive in drives %}
+            <tr class="clickable-row" onclick="selectDrive(this, '{{ drive.drive_name }}')">
+                <td>{{ drive.drive_name }}</td>
+                <td>{{ drive.drive_size | round(2) }}GB</td>
+                <td>{{ drive.user_connection }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
+    <div id="confirm_section" style="display: none; margin-top: 20px;">
+        <div class = "centre_selection">
+            <h3>Selected Drive: <span id="drive_display_name"></span></h3>
+            <button type="button" class = "drive_input_btn" onclick="submitDrive()">Confirm</button>
+            <h6>You will be redirected to the login page after this.</h6>
+            
+        </div>
+    </div>
+    </div>
+</form>
 
 {% endblock %}

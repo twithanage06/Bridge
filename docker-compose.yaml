@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   bridge_app:
     build: .
@@ -8,6 +6,8 @@ services:
     volumes:
       - .:/bridge
       - /mnt/my_fake_drive:/mnt/cloud1
+      - /mnt/my_fake_drive2:/mnt/cloud2
+      - /mnt/my_fake_drive3:/mnt/cloud3
       - ./instance:/Bridge/instance
 
     environment:

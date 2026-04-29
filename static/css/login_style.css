@@ -1,0 +1,94 @@
+@keyframes typing {
+    from { width: 0 }
+    to { width: 320px; }
+}
+
+
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: #D3DAD9; }
+}
+
+@keyframes zoom-anim {
+    0%{
+        font-size: 500px;
+    }
+    100%{
+        font_size: 90px;
+    }
+    
+}
+@keyframes floatUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px); 
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);   
+    }
+}
+
+body{
+    font-family: sans-serif;
+    background-color: #37353E;
+    color: #D3DAD9;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+.typing_title {
+    font-size: 90px;
+    font-family: sans-serif; 
+    overflow: hidden;
+    border-right: 5px solid #D3DAD9; 
+    white-space: nowrap; 
+    margin: 0 auto; 
+    letter-spacing: 2px;
+    
+    width: 0; 
+    animation: 
+        typing 1s forwards,
+        blink-caret 0.75s step-end infinite,
+        zoom-anim 1s forwards;
+}
+.user_input_box{
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: floatUp 0.4s ease-out forwards;
+    animation-delay: 1s;
+}
+.user_input{
+    background-color: #D3DAD9;
+    color:#44444E;
+    font-weight: bold;
+    border:none;
+    border-radius: 5px;
+    font-size: 20px;
+    text-align: center;
+    animation: floatUp 0.4s ease-out forwards;
+
+}
+.user_input_btn{
+    cursor: pointer;
+    margin-top: 30px;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #715A5A;
+    color: #D3DAD9;
+    border: none;
+    border-radius: 10px;
+    width: 100px;
+    height: 50px;
+    transition:150ms;
+}
+.user_input_btn:hover{
+    width: 120px;
+    height: 70px;
+}

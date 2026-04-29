@@ -33,9 +33,18 @@ function submit_login_info(){
     document.getElementById("login_details").submit();
 }
 
-function submitDrive(driveName) {
-        // Set the hidden input's value to the drive name we clicked
-        document.getElementById('selected_drive').value = driveName;
-        // Submit the form
-        document.getElementById('drive_chosen').submit();
+function selectDrive(selectedRow, driveName) {
+    let allRows = document.querySelectorAll('.clickable-row');
+    allRows.forEach(row => {
+        row.classList.remove('selected-row');
+    });
+    selectedRow.classList.add('selected-row');
+    document.getElementById('selected_drive').value = driveName;
+    document.getElementById('drive_display_name').innerText = driveName;
+    document.getElementById('confirm_section').style.display = 'block';
+}
+
+function submitDrive() {
+
+    document.getElementById('drive_chosen').submit();
 }
