@@ -2,14 +2,18 @@
 
 {% block body %}
 <div class="header">
+    <a href="{{ url_for('account_settings') }}" class="header_links">Account</a>
     <h1 style="margin: 0;">Bridge.</h1>
+    <a href="{{ url_for('login') }}" class="header_links">Logout</a>
 </div>
 
 <div class="user_info_box">
-    <form id="details_form" action="{{ url_for('user_dashboard', username=username, subpath=current_subpath) }}" method="post" style="display: flex; width: 66%; justify-content: space-between;">
-        
+    <form id="details_form" action="{{ url_for('user_dashboard', username=username, subpath=current_subpath) }}" method="post" style="display: none;">
         <input type="hidden" name="selected_file" id="selected_file" value="{{ selected_file if selected_file else '' }}">
+    </form>
 
+    <div style="display: flex; width: 66%; justify-content: space-between; height: 100%; margin: 0;">
+        
         <div class="preview_box" style="width: 49%;">
             {% if file_selected %}
                 <iframe src="{{ url_for('view_file', username=username, filename=selected_file) }}" 
@@ -24,18 +28,27 @@
 
         <div class="files_box" style="width: 49%;">
             <div class="file_managing">
-                {% if parent_subpath is not none %}
-                    <a href="{{ url_for('user_dashboard', username=username, subpath=parent_subpath) }}" class="btn btn-secondary mb-3">
-                        Back
-                    </a>
-                {% endif %}
+                <div style="display: flex; gap: 15px; align-items: center;">
+                    {% if parent_subpath is not none %}
+                        <a href="{{ url_for('user_dashboard', username=username, subpath=parent_subpath) }}" class="header_links">
+                            Back
+                        </a>
+                    {% endif %}
+                    
+                    {% if current_subpath != '' %}
+                    <form action="{{ url_for('delete_item', username=username, filename=current_subpath) }}" method="POST" onsubmit="return confirm('Delete this entire folder?');" style="margin: 0;">
+                        <button type="submit" class="delete_btn" style="height: 30px; font-size: 14px; margin-top: 0; width: auto; padding: 0 10px;">Delete Current Folder</button>
+                    </form>
+                    {% endif %}
 
-                <input type="search" id="searchBar" placeholder="Search through files..." oninput="search_term()">
-                <h4>{{ used_percentage }}% used</h4>
+                    <input type="search" id="searchBar" placeholder="Search through files..." class="search_bar" oninput="search_term()">
+                </div>
                 
-                <div>
-                    <input type="text" id="folder_name" placeholder="Folder Name...." name="folder_name">
-                    <button type="submit" id="create_folder">Create Folder</button>
+                <div style="display: flex; align-items: center;">
+                    <form action="{{ url_for('user_dashboard', username=username, subpath=current_subpath) }}" method="post" style="display: flex; gap: 5px; margin: 0;">
+                        <input type="text" id="folder_name" placeholder="Folder Name...." name="folder_name" class="search_bar">
+                        <button type="submit" id="create_folder" class="enter_btn">Create Folder</button>
+                    </form>
                 </div>
             </div>
             
@@ -46,11 +59,12 @@
                         <th>Type</th> 
                         <th>Size</th>
                         <th>Date Modified</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for file in files %}
-                    <tr class="file-row">
+                    <tr class="file-row" onclick="if(event.target.tagName !== 'A' && event.target.tagName !== 'BUTTON') { this.querySelector('a').click(); }">
                         <td class="file-name">
                             {% if file.type == 'Folder' %}
                                 <a href="{{ url_for('user_dashboard', username=username, subpath=file.rel_path) }}">
@@ -58,7 +72,7 @@
                                 </a>
                             {% else %}
                                 <a href="javascript:void(0);" 
-                                   onclick="document.getElementById('selected_file').value='{{ file.rel_path }}'; document.getElementById('details_form').submit();">
+                                onclick="document.getElementById('selected_file').value='{{ file.rel_path }}'; document.getElementById('details_form').submit();">
                                     📄 {{ file.name }}
                                 </a>
                             {% endif %}
@@ -66,29 +80,39 @@
                         <td>{{ file.type }}</td>
                         <td>{{ file.size }}</td>
                         <td>{{ file.modified }}</td>
+                        <td>
+                            {% if file.type == 'Folder' %}
+                            <form action="{{ url_for('delete_item', username=username, filename=file.rel_path) }}" method="POST" onsubmit="return confirm('Are you sure you want to permanently delete this folder and ALL files inside it?');" style="margin: 0;">
+                                <button type="submit" onclick="event.stopPropagation();" style="background: transparent; border: none; font-size: 18px; cursor: pointer;" title="Delete Folder">
+                                    🗑️
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-    </form>
-
+    </div>
     <div class="ud_box" style="width: 33%;">
         <div class="files_info_box">
             {% if file_selected %}
-                <h3>{{ selected_file.split('/')[-1] }}</h3> 
-                
+                <h2>File Name:</h2>
+                <h3 style="margin:0;">{{ selected_file.split('/')[-1] }}</h3> 
+                <div class="file_options">
                 <a href="{{ url_for('download_file', username=username, filename=selected_file) }}">
-                    <button type="button" style="width: 100%; margin-bottom: 10px;">Download</button>
+                    <button type="button" style="width: 100%; margin-bottom: 10px;" class="download_btn">Download</button>
                 </a>
 
                 <form action="{{ url_for('delete_item', username=username, filename=selected_file) }}" 
                       method="POST" 
                       onsubmit="return confirm('Are you sure you want to permanently delete this item?');">
-                    <button type="submit" style="width: 100%; background-color: #ff4444; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 10px;">
+                    <button type="submit" class="delete_btn">
                         Delete
                     </button>
                 </form>
+                </div>
             {% else %}
                 <div style="display: flex; height: 100%; align-items: center; justify-content: center; color: gray;">
                     <p>File Details</p>
@@ -99,15 +123,24 @@
         <div class="files_upload_box">
             <form action="{{ url_for('user_dashboard', username=username, subpath=current_subpath) }}" 
                   method="post" enctype="multipart/form-data" style="padding: 15px;">
-                
-                <input type="file" name="file_to_upload" id="file_to_upload" style="width: 100%; margin-bottom: 10px;" 
-                       onchange="get_file_details('{{ drive_size | int }}')">
-                
-                <button type="submit" id="upload_btn" style="width: 100%; display: none;">Upload to Cloud</button>
-                
-                <div id="file-info" style="margin-top: 10px; font-size: 0.85em;"></div>
+                <div class="content">
+                <label for="file_to_upload" class="file_choose_btn">Choose File</label>
+                <input type="file" name="file_to_upload" id="file_to_upload" class="hidden-upload" onchange="get_file_details('{{ drive_size | int }}')">
+                <div id="file-info" style="margin-top: 10px; font-size: 20px;"></div>
+                <button type="submit" id="upload_btn" class="upload_btn">Upload to Cloud</button>
+                </div>
             </form>
         </div>
+        <div class="drive_info">
+            <h2>Drive Space:</h2>
+            <progress value="{{ used_percentage }}" max="100">{{ used_percentage }}</progress>
+            <div class="drive_stats">
+                <h3>Total Space: {{ total_drive_size | round(2) }} GB</h3>
+                <h3>Used Space: {{ used_size | round(2) }} GB</h3>
+                <h3>Space Left: {{ (total_drive_size-used_size) | round(2) }} GB</h3>
+            </div>
+        </div>
     </div>
+
 </div>
 {% endblock %}

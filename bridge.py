@@ -486,11 +486,13 @@ def user_dashboard():
                             size_readable = f"{round(raw_bytes / (1024), 2)} KB"
                         else:
                             size_readable = f"{raw_bytes} B"
+                        _, ext = os.path.splitext(entry.name)
+                        formatted_type = ext[1:].upper() if ext else "File"
                         #Add the file information to a list through a dictionary to grab later
                         file_details.append({
                             "name": entry.name,
                             "size": size_readable,
-                            "type": "File",
+                            "type": formatted_type,
                             "modified": modified_time,
                             "rel_path": rel_path 
                         })
@@ -514,7 +516,11 @@ def user_dashboard():
         if parent_subpath in ['.', '/'] or parent_subpath == subpath:
             parent_subpath = ''
 
-    return render_template('user_dashboard.html', files=file_details, username=passed_user,drive_size = space_left_kb, used_percentage=used_percentage,current_subpath=subpath,parent_subpath=parent_subpath,file_selected=file_selected,selected_file=selected_file)
+    return render_template('user_dashboard.html', files=file_details, username=passed_user,total_drive_size=total_space,drive_size = space_left_kb, used_size= used_space, used_percentage=used_percentage,current_subpath=subpath,parent_subpath=parent_subpath,file_selected=file_selected,selected_file=selected_file)
+
+@app.route("/account_settings", methods=["POST", "GET"])
+def account_settings():
+    return render_template("/account_settings.html")
 
 @app.route("/login", methods=["POST", "GET"])
 def login():

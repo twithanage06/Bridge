@@ -56,7 +56,7 @@ function get_file_details(space_left){
         }
         else {
             upload_btn.style.display = "inline-flex";
-            const space_left_after = (number_space_left - fileSize)/1000
+            const space_left_after = Math.round((number_space_left - fileSize)/1000);
             infoBox.innerHTML = `
             <strong>Selected:</strong> ${fileName}<br>
             <strong>Size:</strong> ${fileSize} KB<br>

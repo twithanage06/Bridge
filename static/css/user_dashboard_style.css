@@ -1,3 +1,7 @@
+body{
+    background-color: #37353E;
+    font-family: sans-serif;
+}
 
 .user_info_box {
     display: flex;
@@ -20,17 +24,20 @@
 
 
 .header {
-    display: flex; 
-    justify-content: center; 
+    display: flex;
+    flex-direction: row; 
+    align-items: center;
+    justify-content: space-between; 
+    padding: 0 20px; 
+    box-sizing: border-box; 
+    
     width: 100%; 
     height: 50px; 
     border: 1px solid black; 
-    align-items: center; 
-    text-align: center; 
-    padding: 0;
     border-radius: 15px;
+    background-color: #44444E;
+    color: #D3DAD9;
 }
-
 .preview_box {
     display: flex;
     flex-direction: column; 
@@ -40,6 +47,8 @@
     box-sizing: border-box;
     overflow-y: auto;
     border-radius: 20px;
+    background-color: #44444E;
+    color: #D3DAD9;
 }
 
 
@@ -53,6 +62,8 @@
     box-sizing: border-box;
     overflow-y: auto;
     border-radius: 20px;
+    background-color: #44444E;
+    color: #D3DAD9;
 }
 
 
@@ -62,19 +73,26 @@
     justify-content: space-between; 
     width: 33%; 
     height: 100%; 
+
 }
 
-.files_info_box, .files_upload_box {
+.files_info_box, .files_upload_box, .drive_info {
     width: 100%; 
-    height: 49.2%; 
+    height: 33%; 
     border: 1px solid black;
     box-sizing: border-box;
     overflow-y: auto;
     border-radius: 20px;
     padding: 15px;
+    background-color: #44444E;
+    color: #D3DAD9;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+
 }
 
-.preview_box:hover, .files_box:hover, .files_info_box:hover, .files_upload_box:hover {
+.preview_box:hover, .files_box:hover, .files_info_box:hover, .files_upload_box:hover, .drive_info:hover {
     outline: 1px solid black;
 }
 .files {
@@ -123,13 +141,180 @@ button {
     border-radius: 5px;
     padding: 5px 10px;
 }
-
-#upload_btn {
-    background-color: #e9e9e9;
-    border: 1px solid black;
-    transition: 0.2s;
+.file_options{
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center;
 }
 
-#upload_btn:hover {
-    background-color: grey;
+.download_btn{
+    cursor: pointer;
+    font-size: 20px;
+    background-color: #715A5A;
+    color: #D3DAD9;
+    border: none;
+    border-radius: 10px;
+    width: 100px;
+    height: 50px;
+    transition:150ms;
+}
+.delete_btn{
+    cursor: pointer;
+    margin-top: 5px;
+    font-size: 20px;
+    background-color: indianred;
+    color: #D3DAD9;
+    border: none;
+    border-radius: 10px;
+    width: 100px;
+    height: 50px;
+    transition:150ms;
+}
+.download_btn:hover{
+    width: 120px;
+    height: 70px;
+    font-weight: bold;
+    border: 2px solid #D3DAD9;
+}
+.delete_btn:hover{
+    width: 120px;
+    height: 70px;
+    font-weight: bold;
+    border: 2px solid #D3DAD9;
+}
+table{
+    margin: 40px auto;
+    border-collapse: seperate;
+    border-spacing: 0;
+    
+    border-radius: 15px;
+    overflow: hidden;
+
+    text-align: center;
+}
+thead tr{
+    background-color: #252130;
+    color:#D3DAD9;
+}
+tbody tr:nth-child(odd){
+    background-color: #dbd8e3;
+    color:#252130;
+}
+
+tbody tr:nth-child(even){
+    background-color:#5c5470;
+    color:#D3DAD9;
+}
+
+tbody tr:hover{
+    background-color:lightsalmon;
+    color:#252130;
+    
+}
+th, td{
+    text-align: left;
+    padding: 8px;
+    font-weight: bold;
+}
+
+tbody tr a {
+    text-decoration: none;   
+    font-weight: bold;
+}
+
+tbody tr:nth-child(odd) a {
+    color: #252130;
+}
+
+tbody tr:nth-child(even) a {
+    color: #D3DAD9;
+}
+tbody tr:hover a {
+    color: #252130;
+}
+.hidden-upload {
+    display: none;
+}
+.file_choose_btn{
+    cursor: pointer;
+    font-size: 20px;
+    background-color: #715A5A;
+    color: #D3DAD9;
+    border: none;
+    border-radius: 10px;
+    width: 150px;
+    height: 50px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+.file_choose_btn:hover{
+    font-weight: bold;
+    border: 2px solid #D3DAD9;
+}
+.upload_btn {
+    margin-top: 30px;
+    display: none; 
+    cursor: pointer;
+    font-size: 20px;
+    background-color: #715A5A; 
+    color: #D3DAD9;
+    border: none;
+    border-radius: 10px;
+    width: 200px;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload_btn:hover {
+    font-weight: bold;
+    border: 2px solid #D3DAD9;
+}
+.content{
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+}
+.search_bar{
+    background-color: #37353E;
+    color: #D3DAD9;
+    border:none;
+    border-radius: 5px;
+    height:30px;
+}
+.enter_btn{
+    cursor: pointer;
+    background-color: #715A5A;
+    color: #D3DAD9;
+    border:none;
+    border-radius:5px;
+}
+.header_links{
+    text-decoration: none;   
+    font-weight: normal;
+    color: #D3DAD9;
+}
+.header_links:hover{
+    text-shadow: 0.5px 0 0 currentColor, -0.5px 0 0 currentColor;
+}
+.file-name a {
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+    display: inline-block;
+    max-width: 200px; 
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+    vertical-align: bottom;
+}
+.drive_stats{
+    margin-top: 40px;
+    border: none;
 }
