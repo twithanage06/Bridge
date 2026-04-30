@@ -124,7 +124,7 @@
             <form action="{{ url_for('user_dashboard', username=username, subpath=current_subpath) }}" 
                   method="post" enctype="multipart/form-data" style="padding: 15px;">
                 <div class="content">
-                <label for="file_to_upload" class="file_choose_btn">Choose File</label>
+                <label for="file_to_upload" class="file_choose_btn">Choose File to Upload</label>
                 <input type="file" name="file_to_upload" id="file_to_upload" class="hidden-upload" onchange="get_file_details('{{ drive_size | int }}')">
                 <div id="file-info" style="margin-top: 10px; font-size: 20px;"></div>
                 <button type="submit" id="upload_btn" class="upload_btn">Upload to Cloud</button>

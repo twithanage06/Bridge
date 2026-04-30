@@ -4,44 +4,38 @@
 {% endblock %}
 
 {% block body %}
-<h1 class="typing_title">Bridge.</h1>
+<h1 class="typing_title" id="typewriter_text" data-type="Account Setup."></h1>
+
 {% if rank == "admin" %}
     {% if no_admin %}
     <h2 class="body_text_1">Welcome!</h2>
     <h2 class="body_text_2">We've noticed you haven't done the setup before.</h2>
     <h2 class="body_text_3">So let's get you setup with an admin account.</h2>
     <form id="login_details" action="/admin_setup" method="post">
-        <div class = "user_input_box">
+        <div class="user_input_box">
             <h3>Username:</h3>
             <input type="text" class="user_input" id="usr_input" name="usrnme" oninput="login_formatting()" placeholder="admin">
             <h3 id="psswrd_txt"></h3>
-            <input type="password" class="user_input" id="psswrd_input" name="psswrd" oninput="login_formatting()" style = "display: none;">
-            <button type="button" class="user_input_btn" id="cont_btn" onclick="submit_login_info()" style = "display: none;">Continue</button>
+            <input type="password" class="user_input" id="psswrd_input" name="psswrd" oninput="login_formatting()" style="display: none;">
+            <button type="button" class="user_input_btn" id="cont_btn" onclick="submit_login_info()" style="display: none;">Continue</button>
         </div>
     </form>
     {% else %}
     <h1 style="color: indianred;">Only one admin allowed per server</h1>
     {% endif %}
-
 {% else %}
-    {% if duplicate_name %}
-        <h3 style="color:indianred; font-weight: bold;">{{ duplicate_name }}</h3>
-    {% endif %}
     <form id="login_details" action="/user_setup" method="post">
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-        <h2 class="body_text_2">Time to set up a user account!</h2>
-        <h2 class="body_text_3">What should we call you?</h2>
+            <h2 class="body_text_2">Time to set up a user account!</h2>
+            <h2 class="body_text_3">What's their name?</h2>
         </div>
-        <div class = "user_input_box">
+        <div class="user_input_box">
             <h3>Username:</h3>
             <input type="text" class="user_input" id="usr_input" name="usrnme" oninput="login_formatting()">
             <h3 id="psswrd_txt"></h3>
-            <input type="password" class="user_input" id = "psswrd_input" name="psswrd" oninput="login_formatting()" style = "display: none;">
-            <button type="button" class="user_input_btn"  id="cont_btn" onclick="submit_login_info()" style = "display: none;">Continue</button>
+            <input type="password" class="user_input" id="psswrd_input" name="psswrd" oninput="login_formatting()" style="display: none;">
+            <button type="button" class="user_input_btn" id="cont_btn" onclick="submit_login_info()" style="display: none;">Continue</button>
         </div>
     </form>
-
 {% endif %}
-
-
 {% endblock %}

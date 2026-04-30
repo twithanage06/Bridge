@@ -1,8 +1,14 @@
-@keyframes typing {
-    from { width: 0 }
-    to { width: 320px; }
+body {
+    font-family: sans-serif;
+    background-color: #37353E;
+    color: #D3DAD9;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
 }
-
 
 @keyframes blink-caret {
     from, to { border-color: transparent }
@@ -10,14 +16,14 @@
 }
 
 @keyframes zoom-anim {
-    0%{
+    0% {
         font-size: 500px;
     }
-    100%{
-        font_size: 90px;
+    100% {
+        font-size: 90px;
     }
-    
 }
+
 @keyframes floatUp {
     from {
         opacity: 0;
@@ -29,33 +35,22 @@
     }
 }
 
-body{
-    font-family: sans-serif;
-    background-color: #37353E;
-    color: #D3DAD9;
-    display: flex;
-    flex-direction: column; 
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    margin: 0;
-}
 .typing_title {
     font-size: 90px;
     font-family: sans-serif; 
-    overflow: hidden;
-    border-right: 5px solid #D3DAD9; 
+    border-right: 5px solid #D3DAD9;
+    padding-right: 8px; 
     white-space: nowrap; 
     margin: 0 auto; 
     letter-spacing: 2px;
+    min-height: 105px;
     
-    width: 0; 
     animation: 
-        typing 1s forwards,
         blink-caret 0.75s step-end infinite,
         zoom-anim 1s forwards;
 }
-.user_input_box{
+
+.user_input_box {
     display: flex;
     flex-direction: column; 
     align-items: center;
@@ -64,18 +59,19 @@ body{
     animation: floatUp 0.4s ease-out forwards;
     animation-delay: 1s;
 }
-.user_input{
+
+.user_input {
     background-color: #D3DAD9;
-    color:#44444E;
+    color: #44444E;
     font-weight: bold;
-    border:none;
+    border: none;
     border-radius: 5px;
     font-size: 20px;
     text-align: center;
     animation: floatUp 0.4s ease-out forwards;
-
 }
-.user_input_btn{
+
+.user_input_btn {
     cursor: pointer;
     margin-top: 30px;
     font-size: 20px;
@@ -86,9 +82,10 @@ body{
     border-radius: 10px;
     width: 100px;
     height: 50px;
-    transition:150ms;
+    transition: 150ms;
 }
-.user_input_btn:hover{
+
+.user_input_btn:hover {
     width: 120px;
     height: 70px;
 }

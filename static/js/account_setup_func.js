@@ -48,3 +48,29 @@ function submitDrive() {
 
     document.getElementById('drive_chosen').submit();
 }
+document.addEventListener("DOMContentLoaded", async () => {
+    const title = document.getElementById("typewriter_text");
+    if (!title) return;
+
+    const word1 = "Bridge.";
+    const word2 = title.getAttribute("data-type") || "Welcome."; 
+    
+    const typeSpeed = 100;    
+    const eraseSpeed = 80;    
+    const pauseBetween = 1200; 
+
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    for (let i = 0; i <= word1.length; i++) {
+        title.textContent = word1.substring(0, i);
+        await sleep(typeSpeed);
+    }
+    await sleep(pauseBetween);
+    for (let i = word1.length; i >= 0; i--) {
+        title.textContent = word1.substring(0, i);
+        await sleep(eraseSpeed);
+    }
+    for (let i = 0; i <= word2.length; i++) {
+        title.textContent = word2.substring(0, i);
+        await sleep(typeSpeed);
+    }
+});

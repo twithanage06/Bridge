@@ -4,16 +4,19 @@
 {% endblock %}
 
 {% block body %}
-<h1 class="typing_title">Bridge.</h1>
+<!-- The data-type attribute tells the JS what the second word is -->
+<h1 class="typing_title" id="typewriter_text" data-type="Login."></h1>
+
 <form id="login_details" action="/login" method="post">
     <div class="user_input_box">
         <h3>Username:</h3>
         <input type="text" class="user_input" id="usr_input" name="usrnme" oninput="login_formatting()">
         <h3 id="psswrd_txt"></h3>
-        <input type="password" class="user_input" id = "psswrd_input" name="psswrd" oninput="login_formatting()" style = "display: none;">
-        <button type="button" class="user_input_btn" id="cont_btn" onclick="submit_login_info()" style = "display: none;">Continue</button>
+        <input type="password" class="user_input" id="psswrd_input" name="psswrd" oninput="login_formatting()" style="display: none;">
+        <button type="button" class="user_input_btn" id="cont_btn" onclick="submit_login_info()" style="display: none;">Continue</button>
     </div>
 </form>
+
 {% if user_login %}
     <h3 style="color: red; font-weight: bold;">Couldn't find user</h3>
 {% elif user_pass %}
