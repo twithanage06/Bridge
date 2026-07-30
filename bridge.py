@@ -31,7 +31,6 @@ app.config['SQLALCHEMY_BINDS'] = {
     'drives_db': 'sqlite:////Bridge/instance/drives.db'
 }
 db = SQLAlchemy(app)
-app.secret_key = 'super_secret_random_string' # Change this to something unique
 #End app initialisation
 
 #Initialise databases
